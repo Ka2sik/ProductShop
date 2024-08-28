@@ -11,6 +11,9 @@ public class ShopRepository {
     }
 
     public void add(Product product) {
+        if (findById(product.id) != null) {
+            throw new AlreadyExistsException("Element with id: " + product.id + " already exists");
+        }
         products = addToArray(products, product);
     }
 
@@ -18,7 +21,19 @@ public class ShopRepository {
         return products;
     }
 
+    public Product findById(int id) {
+        for (Product product : products) {
+            if (product.getId() == id) {
+                return product;
+            }
+        }
+        return null;
+    }
+
     public void remove(int id) {
+        if (findById(id) == null) {
+            throw new NotFoundException(id);
+        }
         Product[] tmp = new Product[products.length - 1];
         int copyToIndex = 0;
         for (Product product : products) {
